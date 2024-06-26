@@ -1,6 +1,7 @@
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderServiceError
 import folium
+from prettytable import PrettyTable
 
 def get_location_info(place):
     try:
@@ -10,10 +11,14 @@ def get_location_info(place):
         if location:
             data = location.raw
             loc_data = data['display_name'].split()
-            print('Full Location:', location.address)
-            print('Latitude:', location.latitude)
-            print('Longitude:', location.longitude)
-            print('Zip Code:', loc_data[-3])
+            zip_code = loc_data[-3] if len(loc_data) >= 3 else 'N/A'
+            table = PrettyTable()
+            table.field_names = ["Description", "Value"]
+            table.add_row(['Full Location', location.address])
+            table.add_row(['Latitude', location.latitude])
+            table.add_row(['Longitude', location.longitude])
+            table.add_row(['Zip Code', zip_code])
+            print(table)
         else:
             print("Location not found.")
     except GeocoderServiceError as e:
@@ -25,9 +30,16 @@ def reverse_geocode(lat, lon):
         location = geolocator.reverse((lat, lon))
         
         if location:
-            print('Full Location:', location.address)
-            print('Latitude:', location.latitude)
-            print('Longitude:', location.longitude)
+            data = location.raw
+            loc_data = data['display_name'].split()
+            zip_code = loc_data[-3] if len(loc_data) >= 3 else 'N/A'
+            table = PrettyTable()
+            table.field_names = ["Description", "Value"]
+            table.add_row(['Full Location', location.address])
+            table.add_row(['Latitude', location.latitude])
+            table.add_row(['Longitude', location.longitude])
+            table.add_row(['Zip Code', zip_code])
+            print(table)
         else:
             print("Location not found.")
     except GeocoderServiceError as e:
@@ -44,12 +56,15 @@ def main():
         place = input('Enter Place: ')
         get_location_info(place)
     elif choice == '2':
-        lat = float(input('Enter Latitude: '))
-        lon = float(input('Enter Longitude: '))
-        reverse_geocode(lat, lon)
-        map_ = visualize_location(lat, lon)
-        map_.save('location.html')
-        print("Map saved as 'location.html'. Open this file in a browser to view the location.")
+        try:
+            lat = float(input('Enter Latitude: '))
+            lon = float(input('Enter Longitude: '))
+            reverse_geocode(lat, lon)
+            map_ = visualize_location(lat, lon)
+            map_.save('location.html')
+            print("Map saved as 'location.html'. Open this file in a browser to view the location.")
+        except ValueError:
+            print("Invalid input. Please enter numeric values for latitude and longitude.")
     else:
         print("Invalid choice.")
 
