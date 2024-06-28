@@ -66,7 +66,7 @@ def main():
         except ValueError:
             print("Invalid input. Please enter numeric values for latitude and longitude.")
     else:
-        print("Invalid choice.")
+        print("Invalid choice. Please try running the scrip again")
 
 if __name__ == "__main__":
     main()
