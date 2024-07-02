@@ -32,7 +32,7 @@ def get_location_info(place):
         print("Geocoding error:", e)
 
 def reverse_geocode(lat, lon):
-    """Get location information for given latitude and longitude."""
+    """Get location information for given latitude and longitude"""
     try:
         geolocator = get_geolocator()
         location = geolocator.reverse((lat, lon))
