@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation Service</title>
+    <script>
+        async function geocode() {
+            const place = document.getElementById('place').value;
+            const response = await fetch('/geocode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ place })
+            });
+            const result = await response.json();
+            document.getElementById('result').innerText = result.result || result.error;
+        }
+
+        async function reverseGeocode() {
+            const lat = document.getElementById('lat').value;
+            const lon = document.getElementById('lon').value;
+            const response = await fetch('/reverse', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ lat, lon })
+            });
+            const result = await response.json();
+            document.getElementById('result').innerText = result.result || result.error;
+        }
+
+        async function visualize() {
+            const lat = document.getElementById('lat').value;
+            const lon = document.getElementById('lon').value;
+            const response = await fetch('/map', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ lat, lon })
+            });
+            const result = await response.json();
+            if (result.map_file) {
+                document.getElementById('map').src = `static/${result.map_file}`;
+            } else {
+                document.getElementById('result').innerText = result.error;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Geolocation Service</h1>
+    <div>
+        <h2>Geocode</h2>
+        <input type="text" id="place" placeholder="Enter place name">
+        <button onclick="geocode()">Get Location Info</button>
+    </div>
+    <div>
+        <h2>Reverse Geocode</h2>
+        <input type="number" id="lat" placeholder="Latitude">
+        <input type="number" id="lon" placeholder="Longitude">
+        <button onclick="reverseGeocode()">Get Location Info</button>
+    </div>
+    <div>
+        <h2>Visualize Location</h2>
+        <button onclick="visualize()">Visualize</button>
+        <iframe id="map" width="600" height="400"></iframe>
+    </div>
+    <div>
+        <h2>Result</h2>
+        <pre id="result"></pre>
+    </div>
+</body>
+</html>
