@@ -26,6 +26,7 @@ def create_table(location, zip_code):
 
 def get_geolocator():
     """Initialize and return a geolocator instance."""
+    """Day One of not making significant changes to my project """
     return Nominatim(user_agent="abcd")
 
 def get_location_info(place):
